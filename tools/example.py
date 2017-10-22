@@ -2,7 +2,7 @@ from __future__ import print_function
 
 import sys
 import numpy as np
-import pylab
+import matplotlib.pyplot as plt
 
 import talib
 from talib.abstract import Function
@@ -37,14 +37,14 @@ def abstract_example():
     plot(odata, upper, middle, lower, kama)
 
 def plot(odata, upper, middle, lower, kama):
-    pylab.plot(r, idata, 'b-', label="original")
-    pylab.plot(r, odata, 'g-', label="MA")
-    pylab.plot(r, upper, 'r-', label="Upper")
-    pylab.plot(r, middle, 'r-', label="Middle")
-    pylab.plot(r, lower, 'r-', label="Lower")
-    pylab.plot(r, kama, 'g', label="KAMA")
-    pylab.legend()
-    pylab.show()
+    plt.plot(r, idata, 'b-', label="original")
+    plt.plot(r, odata, 'g-', label="MA")
+    plt.plot(r, upper, 'r-', label="Upper")
+    plt.plot(r, middle, 'r-', label="Middle")
+    plt.plot(r, lower, 'r-', label="Lower")
+    plt.plot(r, kama, 'g', label="KAMA")
+    plt.legend()
+    plt.show()
 
 if __name__ == '__main__':
     print('All functions (sorted by group):')

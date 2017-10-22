@@ -1,10 +1,10 @@
-cimport _ta_lib as lib
-from _ta_lib cimport TA_RetCode, TA_FuncUnstId
+cimport _c_ta_lib as clib
+from _c_ta_lib cimport TA_RetCode, TA_FuncUnstId
 
-__ta_version__ = lib.TA_GetVersionString()
+__ta_version__ = clib.TA_GetVersionString()
 
 cpdef _ta_check_success(str function_name, TA_RetCode ret_code):
-    if ret_code == lib.TA_SUCCESS:
+    if ret_code == clib.TA_SUCCESS:
         return True
     ta_errors = {
         0: 'Success',
@@ -32,12 +32,12 @@ cpdef _ta_check_success(str function_name, TA_RetCode ret_code):
 
 def _ta_initialize():
     cdef TA_RetCode ret_code
-    ret_code = lib.TA_Initialize()
+    ret_code = clib.TA_Initialize()
     _ta_check_success('TA_Initialize', ret_code)
 
 def _ta_shutdown():
     cdef TA_RetCode ret_code
-    ret_code = lib.TA_Shutdown()
+    ret_code = clib.TA_Shutdown()
     _ta_check_success('TA_Shutdown', ret_code)
 
 class MA_Type(object):
@@ -73,13 +73,13 @@ for i, name in enumerate([
 def _ta_set_unstable_period(name, period):
     cdef TA_RetCode ret_code
     cdef TA_FuncUnstId id = _ta_func_unst_ids[name]
-    ret_code = lib.TA_SetUnstablePeriod(id, period)
+    ret_code = clib.TA_SetUnstablePeriod(id, period)
     _ta_check_success('TA_SetUnstablePeriod', ret_code)
 
 def _ta_get_unstable_period(name):
     cdef unsigned int period
     cdef TA_FuncUnstId id = _ta_func_unst_ids[name]
-    period = lib.TA_GetUnstablePeriod(id)
+    period = clib.TA_GetUnstablePeriod(id)
     return period
 
 class CandleSettingType(object):
@@ -96,10 +96,10 @@ RangeType = RangeType()
 
 def _ta_set_candle_settings(settingtype, rangetype, avgperiod, factor):
     cdef TA_RetCode ret_code
-    ret_code = lib.TA_SetCandleSettings(settingtype, rangetype, avgperiod, factor)
+    ret_code = clib.TA_SetCandleSettings(settingtype, rangetype, avgperiod, factor)
     _ta_check_success('TA_SetCandleSettings', ret_code)
 
 def _ta_restore_candle_default_settings(settingtype):
     cdef TA_RetCode ret_code
-    ret_code = lib.TA_RestoreCandleDefaultSettings(settingtype)
+    ret_code = clib.TA_RestoreCandleDefaultSettings(settingtype)
     _ta_check_success('TA_RestoreCandleDefaultSettings', ret_code)

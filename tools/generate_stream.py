@@ -4,7 +4,7 @@ import os
 import re
 import sys
 
-from talib import abstract
+from talib import _ta_lib
 
 # FIXME: initialize once, then shutdown at the end, rather than each call?
 # FIXME: should we pass startIdx and endIdx into function?
@@ -47,10 +47,11 @@ functions = [s for s in functions if not s.startswith('TA_RetCode TA_Restore')]
 
 # print headers
 print("""\
+import numpy as np
 cimport numpy as np
 from cython import boundscheck, wraparound
-cimport _ta_lib as lib
-from _ta_lib cimport TA_RetCode
+cimport _c_ta_lib as clib
+from _c_ta_lib cimport TA_RetCode
 # NOTE: _ta_check_success, NaN are defined in common.pxi
 #       NumPy C API is initialize in _func.pxi
 
@@ -78,8 +79,8 @@ for f in functions:
 
     shortname = name[3:]
     names.append(shortname)
-    func_info = abstract.Function(shortname).info
-    defaults, documentation = abstract._get_defaults_and_docs(func_info)
+    func_info = _ta_lib.Function(shortname, None).info
+    defaults, documentation = _ta_lib._get_defaults_and_docs(func_info)
 
     print('@wraparound(False)  # turn off relative indexing from end of lists')
     print('@boundscheck(False) # turn off bounds-checking for entire function')
@@ -122,7 +123,7 @@ for f in functions:
                 else:
                     print('int %s=-2**31' % var, end=' ')   # TA_INTEGER_DEFAULT
             elif arg.startswith('TA_MAType'):
-                print('int %s=0' % var, end=' ')            # TA_MAType_SMA
+                print('TA_MAType %s=TA_MAType.TA_MAType_SMA' % var, end=' ')            # TA_MAType_SMA
             else:
                 assert False, arg
             if '[, ' not in docs:
@@ -200,7 +201,7 @@ for f in functions:
             print('    if %s.ndim != 1:' % var)
             print('        raise Exception("%s has wrong dimensions")' % var)
             print('    if not (PyArray_FLAGS(%s) & np.NPY_C_CONTIGUOUS):' % var)
-            print('        %s = PyArray_GETCONTIGUOUS(%s)' % (var, var))
+            print('        %s = np.ascontiguousarray(%s)' % (var, var))
             print('    %s_data = %s%s.data' % (var, cast, var))
 
     # check all input array lengths are the same
@@ -243,7 +244,7 @@ for f in functions:
             else:
                 assert False, args
 
-    print('    retCode = lib.%s(' % name, end=' ')
+    print('    retCode = clib.%s(' % name, end=' ')
 
     for i, arg in enumerate(args):
         if i > 0:

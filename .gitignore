@@ -1,6 +1,8 @@
 docs/html
 docs/.tadoc.org.html
 
+build_output.txt
+*.ipynb
 *.pyc
 build/
 dist/

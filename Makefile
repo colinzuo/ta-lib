@@ -14,11 +14,17 @@ talib/_stream.pxi: tools/generate_stream.py
 
 generate: talib/_func.pxi talib/_stream.pxi
 
+generate_clean:
+	rm talib/_func.pxi talib/_stream.pxi
+
 cython:
 	cython talib/_ta_lib.pyx
 
+cython_clean:
+	rm talib/_ta_lib.c
+
 clean:
-	rm -rf build talib/_ta_lib.so talib/*.pyc
+	rm -rf build dist TA_Lib.egg*  talib/_ta_lib.*so talib/*.pyc talib/__pycache__
 
 perf:
 	python tools/perf_talib.py

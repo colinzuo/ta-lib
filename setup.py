@@ -4,21 +4,11 @@ import sys
 import os
 import warnings
 
-from distutils.dist import Distribution
+from setuptools import setup
+from setuptools import Extension
+from Cython.Build import cythonize
 
-display_option_names = Distribution.display_option_names + ['help', 'help-commands']
-query_only = any('--' + opt in sys.argv for opt in display_option_names) or len(sys.argv) < 2 or sys.argv[1] == 'egg_info'
-
-# Use setuptools for querying the package, normal builds use distutils
-if query_only:
-    try:
-        from setuptools import setup
-    except ImportError:
-        from distutils.core import setup
-else:
-    from distutils.core import setup
-
-from distutils.extension import Extension
+import numpy
 
 lib_talib_name = 'ta_lib'  # the underlying C library's name
 
@@ -36,7 +26,7 @@ for prefix in ['darwin', 'linux', 'bsd', 'sunos']:
         ]
         if 'TA_INCLUDE_PATH' in os.environ:
             include_dirs.append(os.environ['TA_INCLUDE_PATH'])
-        lib_talib_dirs = [
+        lib_talib_dirs_all = [
             '/usr/lib',
             '/usr/local/lib',
             '/usr/lib64',
@@ -44,6 +34,10 @@ for prefix in ['darwin', 'linux', 'bsd', 'sunos']:
             '/opt/lib',
             '/opt/local/lib',
         ]
+        lib_talib_dirs = []
+        for lib_talib_dir in lib_talib_dirs_all:
+            if os.path.exists(lib_talib_dir):
+                lib_talib_dirs.append(lib_talib_dir)
         if 'TA_LIBRARY_PATH' in os.environ:
             runtime_lib_dirs = os.environ['TA_LIBRARY_PATH']
             if runtime_lib_dirs:
@@ -60,16 +54,7 @@ if sys.platform == "win32":
 if not platform_supported:
     raise NotImplementedError(sys.platform)
 
-# Do not require numpy or cython for just querying the package
-if not query_only:
-    import numpy
-    include_dirs.insert(0, numpy.get_include())
-
-try:
-    from Cython.Distutils import build_ext
-    has_cython = True
-except ImportError:
-    has_cython = False
+include_dirs.insert(0, numpy.get_include())
 
 for lib_talib_dir in lib_talib_dirs:
     try:
@@ -81,14 +66,11 @@ for lib_talib_dir in lib_talib_dirs:
 else:
     warnings.warn('Cannot find ta-lib library, installation may fail.')
 
-cmdclass = {}
-if has_cython:
-    cmdclass['build_ext'] = build_ext
-
 ext_modules = [
     Extension(
         'talib._ta_lib',
-        ['talib/_ta_lib.pyx' if has_cython else 'talib/_ta_lib.c'],
+        ['talib/_ta_lib.pyx'],
+        define_macros=[],
         include_dirs=include_dirs,
         library_dirs=lib_talib_dirs,
         libraries=[lib_talib_name],
@@ -96,13 +78,16 @@ ext_modules = [
     )
 ]
 
-
 setup(
     name = 'TA-Lib',
     version = '0.4.10',
-    description = 'Python wrapper for TA-Lib',
+    packages = ['talib'],
+
+    install_requires=['numpy>=1.11.1', 'Cython>=0.24.1'],
+
     author = 'John Benediktsson',
     author_email = 'mrjbq7@gmail.com',
+    description = 'Python wrapper for TA-Lib',
     url = 'http://github.com/mrjbq7/ta-lib',
     download_url = 'https://github.com/mrjbq7/ta-lib/releases',
     classifiers = [
@@ -124,8 +109,5 @@ setup(
         "Intended Audience :: Science/Research",
         "Intended Audience :: Financial and Insurance Industry",
     ],
-    packages = ['talib'],
-    ext_modules = ext_modules,
-    cmdclass = cmdclass,
-    requires = ['numpy'],
+    ext_modules = cythonize(ext_modules),
 )

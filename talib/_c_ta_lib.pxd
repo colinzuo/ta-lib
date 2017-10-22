@@ -1,108 +1,106 @@
 
 cdef extern from "ta-lib/ta_defs.h":
-    ctypedef int TA_RetCode
+    ctypedef enum TA_RetCode:
+        TA_SUCCESS = 0
+        TA_LIB_NOT_INITIALIZE = 1
+        TA_BAD_PARAM = 2
+        TA_ALLOC_ERR = 3
+        TA_GROUP_NOT_FOUND = 4
+        TA_FUNC_NOT_FOUND = 5
+        TA_INVALID_HANDLE = 6
+        TA_INVALID_PARAM_HOLDER = 7
+        TA_INVALID_PARAM_HOLDER_TYPE = 8
+        TA_INVALID_PARAM_FUNCTION = 9
+        TA_INPUT_NOT_ALL_INITIALIZE = 10
+        TA_OUTPUT_NOT_ALL_INITIALIZE = 11
+        TA_OUT_OF_RANGE_START_INDEX = 12
+        TA_OUT_OF_RANGE_END_INDEX = 13
+        TA_INVALID_LIST_TYPE = 14
+        TA_BAD_OBJECT = 15
+        TA_NOT_SUPPORTED = 16
+        TA_INTERNAL_ERROR = 5000
+        TA_UNKNOWN_ERR = 0xffff
 
-    ctypedef int TA_RetCode
-    TA_RetCode TA_SUCCESS = 0
-    TA_RetCode TA_LIB_NOT_INITIALIZE = 1
-    TA_RetCode TA_BAD_PARAM = 2
-    TA_RetCode TA_ALLOC_ERR = 3
-    TA_RetCode TA_GROUP_NOT_FOUND = 4
-    TA_RetCode TA_FUNC_NOT_FOUND = 5
-    TA_RetCode TA_INVALID_HANDLE = 6
-    TA_RetCode TA_INVALID_PARAM_HOLDER = 7
-    TA_RetCode TA_INVALID_PARAM_HOLDER_TYPE = 8
-    TA_RetCode TA_INVALID_PARAM_FUNCTION = 9
-    TA_RetCode TA_INPUT_NOT_ALL_INITIALIZE = 10
-    TA_RetCode TA_OUTPUT_NOT_ALL_INITIALIZE = 11
-    TA_RetCode TA_OUT_OF_RANGE_START_INDEX = 12
-    TA_RetCode TA_OUT_OF_RANGE_END_INDEX = 13
-    TA_RetCode TA_INVALID_LIST_TYPE = 14
-    TA_RetCode TA_BAD_OBJECT = 15
-    TA_RetCode TA_NOT_SUPPORTED = 16
-    TA_RetCode TA_INTERNAL_ERROR = 5000
-    TA_RetCode TA_UNKNOWN_ERR = 0xffff
+    ctypedef enum TA_Compatibility:
+        TA_COMPATIBILITY_DEFAULT = 0
+        TA_COMPATIBILITY_METASTOCK = 1
 
-    ctypedef int TA_Compatibility
-    TA_Compatibility TA_COMPATIBILITY_DEFAULT = 0
-    TA_Compatibility TA_COMPATIBILITY_METASTOCK = 1
+    ctypedef enum TA_MAType:
+        TA_MAType_SMA = 0
+        TA_MAType_EMA = 1
+        TA_MAType_WMA = 2
+        TA_MAType_DEMA = 3
+        TA_MAType_TEMA = 4
+        TA_MAType_TRIMA = 5
+        TA_MAType_KAMA = 6
+        TA_MAType_MAMA = 7
+        TA_MAType_T3 = 8
 
-    ctypedef int TA_MAType
-    TA_MAType TA_MAType_SMA = 0
-    TA_MAType TA_MAType_EMA = 1
-    TA_MAType TA_MAType_WMA = 2
-    TA_MAType TA_MAType_DEMA = 3
-    TA_MAType TA_MAType_TEMA = 4
-    TA_MAType TA_MAType_TRIMA = 5
-    TA_MAType TA_MAType_KAMA = 6
-    TA_MAType TA_MAType_MAMA = 7
-    TA_MAType TA_MAType_T3 = 8
+    ctypedef enum TA_FuncUnstId:
+        TA_FUNC_UNST_ADX = 0
+        TA_FUNC_UNST_ADXR = 1
+        TA_FUNC_UNST_ATR = 2
+        TA_FUNC_UNST_CMO = 3
+        TA_FUNC_UNST_DX = 4
+        TA_FUNC_UNST_EMA = 5
+        TA_FUNC_UNST_HT_DCPERIOD = 6
+        TA_FUNC_UNST_HT_DCPHASE = 7
+        TA_FUNC_UNST_HD_PHASOR = 8
+        TA_FUNC_UNST_HT_SINE = 9
+        TA_FUNC_UNST_HT_TRENDLINE = 10
+        TA_FUNC_UNST_HT_TRENDMODE = 11
+        TA_FUNC_UNST_KAMA = 12
+        TA_FUNC_UNST_MAMA = 13
+        TA_FUNC_UNST_MFI = 14
+        TA_FUNC_UNST_MINUS_DI = 15
+        TA_FUNC_UNST_MINUS_DM = 16
+        TA_FUNC_UNST_NATR = 17
+        TA_FUNC_UNST_PLUS_DI = 18
+        TA_FUNC_UNST_PLUS_DM = 19
+        TA_FUNC_UNST_RSI = 20
+        TA_FUNC_UNST_STOCHRSI = 21
+        TA_FUNC_UNST_T3 = 21
+        TA_FUNC_UNST_ALL = 22
+        TA_FUNC_UNST_NONE = -1
 
-    ctypedef int TA_FuncUnstId
-    TA_FuncUnstId TA_FUNC_UNST_ADX = 0
-    TA_FuncUnstId TA_FUNC_UNST_ADXR = 1
-    TA_FuncUnstId TA_FUNC_UNST_ATR = 2
-    TA_FuncUnstId TA_FUNC_UNST_CMO = 3
-    TA_FuncUnstId TA_FUNC_UNST_DX = 4
-    TA_FuncUnstId TA_FUNC_UNST_EMA = 5
-    TA_FuncUnstId TA_FUNC_UNST_HT_DCPERIOD = 6
-    TA_FuncUnstId TA_FUNC_UNST_HT_DCPHASE = 7
-    TA_FuncUnstId TA_FUNC_UNST_HD_PHASOR = 8
-    TA_FuncUnstId TA_FUNC_UNST_HT_SINE = 9
-    TA_FuncUnstId TA_FUNC_UNST_HT_TRENDLINE = 10
-    TA_FuncUnstId TA_FUNC_UNST_HT_TRENDMODE = 11
-    TA_FuncUnstId TA_FUNC_UNST_KAMA = 12
-    TA_FuncUnstId TA_FUNC_UNST_MAMA = 13
-    TA_FuncUnstId TA_FUNC_UNST_MFI = 14
-    TA_FuncUnstId TA_FUNC_UNST_MINUS_DI = 15
-    TA_FuncUnstId TA_FUNC_UNST_MINUS_DM = 16
-    TA_FuncUnstId TA_FUNC_UNST_NATR = 17
-    TA_FuncUnstId TA_FUNC_UNST_PLUS_DI = 18
-    TA_FuncUnstId TA_FUNC_UNST_PLUS_DM = 19
-    TA_FuncUnstId TA_FUNC_UNST_RSI = 20
-    TA_FuncUnstId TA_FUNC_UNST_STOCHRSI = 21
-    TA_FuncUnstId TA_FUNC_UNST_T3 = 21
-    TA_FuncUnstId TA_FUNC_UNST_ALL = 22
-    TA_FuncUnstId TA_FUNC_UNST_NONE = -1
+    ctypedef enum TA_RangeType:
+        TA_RangeType_RealBody = 0
+        TA_RangeType_HighLow = 1
+        TA_RangeType_Shadows = 2
 
-    ctypedef int TA_RangeType
-    TA_RangeType TA_RangeType_RealBody = 0
-    TA_RangeType TA_RangeType_HighLow = 1
-    TA_RangeType TA_RangeType_Shadows = 2
-
-    ctypedef int TA_CandleSettingType
-    TA_CandleSettingType TA_BodyLong = 0
-    TA_CandleSettingType TA_BodyVeryLong = 1
-    TA_CandleSettingType TA_BodyShort = 2
-    TA_CandleSettingType TA_BodyDoji = 3
-    TA_CandleSettingType TA_ShadowLong = 4
-    TA_CandleSettingType TA_ShadowVeryLong = 5
-    TA_CandleSettingType TA_ShadowShort = 6
-    TA_CandleSettingType TA_ShadowVeryShort = 7
-    TA_CandleSettingType TA_Near = 8
-    TA_CandleSettingType TA_Far = 9
-    TA_CandleSettingType TA_Equal = 10
-    TA_CandleSettingType TA_AllCandleSettings = 11
+    ctypedef enum TA_CandleSettingType:
+        TA_BodyLong = 0
+        TA_BodyVeryLong = 1
+        TA_BodyShort = 2
+        TA_BodyDoji = 3
+        TA_ShadowLong = 4
+        TA_ShadowVeryLong = 5
+        TA_ShadowShort = 6
+        TA_ShadowVeryShort = 7
+        TA_Near = 8
+        TA_Far = 9
+        TA_Equal = 10
+        TA_AllCandleSettings = 11
 
 cdef extern from "ta-lib/ta_common.h":
-    char *TA_GetVersionString()
-    char *TA_GetVersionMajor()
-    char *TA_GetVersionMinor()
-    char *TA_GetVersionBuild()
-    char *TA_GetVersionDate()
-    char *TA_GetVersionTime()
+    const char *TA_GetVersionString()
+    const char *TA_GetVersionMajor()
+    const char *TA_GetVersionMinor()
+    const char *TA_GetVersionBuild()
+    const char *TA_GetVersionDate()
+    const char *TA_GetVersionTime()
 
     ctypedef double TA_Real
     ctypedef int TA_Integer
 
     ctypedef struct TA_StringTable:
         unsigned int size
-        char **string
+        const char **string
         void *hiddenData
 
     ctypedef struct TA_RetCodeInfo:
-        char* enumStr
-        char* infoStr
+        const char* enumStr
+        const char* infoStr
 
     void TA_SetRetCodeInfo(TA_RetCode theRetCode, TA_RetCodeInfo *retCodeInfo)
 
@@ -114,40 +112,40 @@ cdef extern from "ta-lib/ta_abstract.h":
     TA_RetCode TA_GroupTableAlloc(TA_StringTable **table)
     TA_RetCode TA_GroupTableFree(TA_StringTable *table)
 
-    TA_RetCode TA_FuncTableAlloc(char *group, TA_StringTable **table)
+    TA_RetCode TA_FuncTableAlloc(const char *group, TA_StringTable **table)
     TA_RetCode TA_FuncTableFree(TA_StringTable *table)
 
     ctypedef unsigned int TA_FuncHandle
-    TA_RetCode TA_GetFuncHandle(char *name, TA_FuncHandle **handle)
+    TA_RetCode TA_GetFuncHandle(const char *name, const TA_FuncHandle **handle)
 
     ctypedef int TA_FuncFlags
     ctypedef struct TA_FuncInfo:
-        char *name
-        char *group
-        char *hint
-        char *camelCaseName
+        const char *name
+        const char *group
+        const char *hint
+        const char *camelCaseName
         TA_FuncFlags flags
         unsigned int nbInput
         unsigned int nbOptInput
         unsigned int nbOutput
-        TA_FuncHandle *handle
+        const TA_FuncHandle *handle
 
-    TA_RetCode TA_GetFuncInfo(TA_FuncHandle *handle, TA_FuncInfo **funcInfo)
+    TA_RetCode TA_GetFuncInfo(const TA_FuncHandle *handle, const TA_FuncInfo **funcInfo)
 
-    ctypedef int TA_InputParameterType
-    TA_InputParameterType TA_Input_Price = 0
-    TA_InputParameterType TA_Input_Real = 1
-    TA_InputParameterType TA_Input_Integer = 2
+    ctypedef enum TA_InputParameterType:
+        TA_Input_Price = 0
+        TA_Input_Real = 1
+        TA_Input_Integer = 2
 
-    ctypedef int TA_OptInputParameterType
-    TA_OptInputParameterType TA_OptInput_RealRange = 0
-    TA_OptInputParameterType TA_OptInput_RealList = 1
-    TA_OptInputParameterType TA_OptInput_IntegerRange = 2
-    TA_OptInputParameterType TA_OptInput_IntegerList = 3
+    ctypedef enum TA_OptInputParameterType:
+        TA_OptInput_RealRange = 0
+        TA_OptInput_RealList = 1
+        TA_OptInput_IntegerRange = 2
+        TA_OptInput_IntegerList = 3
 
-    ctypedef int TA_OutputParameterType
-    TA_OutputParameterType TA_Output_Real = 0
-    TA_OutputParameterType TA_Output_Integer = 1
+    ctypedef enum TA_OutputParameterType:
+        TA_Output_Real = 0
+        TA_Output_Integer = 1
 
     ctypedef int TA_InputFlags
     ctypedef int TA_OptInputFlags
@@ -155,42 +153,42 @@ cdef extern from "ta-lib/ta_abstract.h":
 
     ctypedef struct TA_InputParameterInfo:
         TA_InputParameterType type
-        char *paramName
+        const char *paramName
         TA_InputFlags flags
 
     ctypedef struct TA_OptInputParameterInfo:
         TA_OptInputParameterType type
-        char *paramName
+        const char *paramName
         TA_OptInputFlags flags
-        char *displayName
-        void *dataSet
+        const char *displayName
+        const void *dataSet
         TA_Real defaultValue
-        char *hint
-        char *helpFile
+        const char *hint
+        const char *helpFile
 
     ctypedef struct TA_OutputParameterInfo:
         TA_OutputParameterType type
-        char *paramName
+        const char *paramName
         TA_OutputFlags flags
 
-    TA_RetCode TA_GetInputParameterInfo(TA_FuncHandle *handle, unsigned int paramIndex, TA_InputParameterInfo **info)
-    TA_RetCode TA_GetOptInputParameterInfo(TA_FuncHandle *handle, unsigned int paramIndex, TA_OptInputParameterInfo **info)
-    TA_RetCode TA_GetOutputParameterInfo(TA_FuncHandle *handle, unsigned int paramIndex, TA_OutputParameterInfo **info)
+    TA_RetCode TA_GetInputParameterInfo(const TA_FuncHandle *handle, unsigned int paramIndex, const TA_InputParameterInfo **info)
+    TA_RetCode TA_GetOptInputParameterInfo(const TA_FuncHandle *handle, unsigned int paramIndex, const TA_OptInputParameterInfo **info)
+    TA_RetCode TA_GetOutputParameterInfo(const TA_FuncHandle *handle, unsigned int paramIndex, const TA_OutputParameterInfo **info)
 
     ctypedef struct TA_ParamHolder:
         void *hiddenData
 
-    TA_RetCode TA_ParamHolderAlloc(TA_FuncHandle *handle, TA_ParamHolder **allocatedParams) # get_lookback()
+    TA_RetCode TA_ParamHolderAlloc(const TA_FuncHandle *handle, TA_ParamHolder **allocatedParams) # get_lookback()
     TA_RetCode TA_ParamHolderFree(TA_ParamHolder *params)
 
     TA_RetCode TA_SetOptInputParamInteger(TA_ParamHolder *params, unsigned int paramIndex, TA_Integer optInValue)
     TA_RetCode TA_SetOptInputParamReal(TA_ParamHolder *params, unsigned int paramIndex, TA_Real optInValue)
 
-    TA_RetCode TA_GetLookback(TA_ParamHolder *params, TA_Integer *lookback)
+    TA_RetCode TA_GetLookback(const TA_ParamHolder *params, TA_Integer *lookback)
 
-    TA_RetCode TA_CallFunc(TA_ParamHolder *params, TA_Integer startIdx, TA_Integer endIdx, TA_Integer *outBegIdx, TA_Integer *outNbElement)
+    TA_RetCode TA_CallFunc(const TA_ParamHolder *params, TA_Integer startIdx, TA_Integer endIdx, TA_Integer *outBegIdx, TA_Integer *outNbElement)
 
-    char* TA_FunctionDescriptionXML()
+    const char* TA_FunctionDescriptionXML()
 
 cdef extern from "ta-lib/ta_func.h":
     TA_RetCode TA_ACOS(int startIdx, int endIdx, const double inReal[], int *outBegIdx, int *outNBElement, double outReal[])
