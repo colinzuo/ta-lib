@@ -1,6 +1,6 @@
 # TA-Lib
 
-[![](https://api.travis-ci.org/mrjbq7/ta-lib.svg)](https://travis-ci.org/mrjbq7/ta-lib)
+[![](https://api.travis-ci.org/colinzuo/ta-lib.svg)](https://travis-ci.org/colinzuo/ta-lib)
 
 This is a Python wrapper for [TA-LIB](http://ta-lib.org) based on Cython
 instead of SWIG. From the homepage:
