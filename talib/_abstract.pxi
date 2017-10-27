@@ -244,6 +244,16 @@ class Function(object):
 
     parameters = property(get_parameters, set_parameters)
 
+    @property
+    def parameters_info(self):
+        """
+        Returns the function's optional parameters and their info.
+        """
+        ret = OrderedDict()
+        for opt_input in self.__opt_inputs:
+            ret[opt_input] = self.__get_opt_input_info(opt_input)
+        return ret
+
     def set_function_args(self, *args, **kwargs):
         """
         optionl args:[input_arrays,] [parameter_args,] [input_price_series_kwargs,] [parameter_kwargs]
@@ -400,6 +410,12 @@ class Function(object):
             value = self.__opt_inputs[input_name]['default_value']
         return value
 
+    def __get_opt_input_info(self, input_name):
+        """
+        Returns the opt input info
+        """
+        return self.__opt_inputs[input_name].copy()
+
     def __repr__(self):
         return '%s' % self.info
 
@@ -550,6 +566,13 @@ def _ta_getOptInputParameterInfo(char *function_name, int idx):
     following keys: name, display_name, type, help, default_value and value.
     """
     cdef const clib.TA_OptInputParameterInfo *info
+    cdef const clib.TA_IntegerRange *integer_range_data_set
+    cdef const clib.TA_RealRange *real_range_data_set
+    cdef const clib.TA_IntegerList *integer_list_data_set
+    cdef const clib.TA_IntegerDataPair *integer_data_pair
+    cdef const clib.TA_RealList *real_list_data_set
+    cdef const clib.TA_RealDataPair *real_data_pair
+
     retCode = clib.TA_GetOptInputParameterInfo(__ta_getFuncHandle(function_name), idx, &info)
     _ta_check_success('TA_GetOptInputParameterInfo', retCode)
 
@@ -559,13 +582,51 @@ def _ta_getOptInputParameterInfo(char *function_name, int idx):
     if default_value % 1 == 0:
         default_value = int(default_value)
 
+    data_set = None
+    if info.dataSet != NULL:
+        if info.type == clib.TA_OptInput_RealRange:
+            real_range_data_set = <const clib.TA_RealRange *>info.dataSet
+            data_set = {"min": real_range_data_set.min,
+                        "max": real_range_data_set.max,
+                        "precision": real_range_data_set.precision,
+                        "suggested_start": real_range_data_set.suggested_start,
+                        "suggested_end": real_range_data_set.suggested_end,
+                        "suggested_increment": real_range_data_set.suggested_increment}
+        elif info.type == clib.TA_OptInput_RealList:
+            #     real_data_pair = <const clib.TA_RealDataPair *>real_list_data_set.data
+            real_list_data_set = < const clib.TA_RealList * > info.dataSet
+            real_list = []
+            for i in xrange(real_list_data_set.nbElement):
+                real_data_pair = < const clib.TA_RealDataPair * > ( & (real_list_data_set.data[i]))
+                real_list.append({"string": bytes2str(real_data_pair.string),
+                                  "value": real_data_pair.value})
+            data_set = {"nbElement": real_list_data_set.nbElement,
+                        "real_list": real_list}
+        elif info.type == clib.TA_OptInput_IntegerRange:
+            integer_range_data_set = <const clib.TA_IntegerRange *>info.dataSet
+            data_set = {"min": integer_range_data_set.min,
+                        "max": integer_range_data_set.max,
+                        "suggested_start": integer_range_data_set.suggested_start,
+                        "suggested_end": integer_range_data_set.suggested_end,
+                        "suggested_increment": integer_range_data_set.suggested_increment}
+        elif info.type == clib.TA_OptInput_IntegerList:
+            integer_list_data_set = <const clib.TA_IntegerList *>info.dataSet
+            integer_list = []
+            for i in xrange(integer_list_data_set.nbElement):
+                integer_data_pair = <const clib.TA_IntegerDataPair *>(&(integer_list_data_set.data[i]))
+                integer_list.append({"string": bytes2str(integer_data_pair.string),
+                                     "value": integer_data_pair.value})
+            data_set = {"nbElement": integer_list_data_set.nbElement,
+                        "integer_list": integer_list}
+
     return {
         'name': name,
         'display_name': bytes2str(info.displayName),
         'type': info.type,
         'help': bytes2str(info.hint),
         'default_value': default_value,
-        'value': None
+        'value': None,
+        'data_set': data_set
     }
 
 def _ta_getOutputParameterInfo(char *function_name, int idx):

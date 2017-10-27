@@ -109,6 +109,37 @@ cdef extern from "ta-lib/ta_common.h":
 
 cdef extern from "ta-lib/ta_abstract.h":
 
+    ctypedef struct TA_RealRange:
+        TA_Real min
+        TA_Real max
+        TA_Integer precision
+        TA_Real suggested_start
+        TA_Real suggested_end
+        TA_Real suggested_increment
+
+    ctypedef struct TA_IntegerRange:
+        TA_Integer min
+        TA_Integer max
+        TA_Integer suggested_start
+        TA_Integer suggested_end
+        TA_Integer suggested_increment
+
+    ctypedef struct TA_RealDataPair:
+        TA_Real value
+        const char *string
+
+    ctypedef struct TA_IntegerDataPair:
+        TA_Integer value
+        const char *string
+
+    ctypedef struct TA_RealList:
+        const TA_RealDataPair *data
+        unsigned int nbElement
+
+    ctypedef struct TA_IntegerList:
+        const TA_IntegerDataPair *data
+        unsigned int nbElement
+
     TA_RetCode TA_GroupTableAlloc(TA_StringTable **table)
     TA_RetCode TA_GroupTableFree(TA_StringTable *table)
 

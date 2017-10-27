@@ -6,9 +6,6 @@ import warnings
 
 from setuptools import setup
 from setuptools import Extension
-from Cython.Build import cythonize
-
-import numpy
 
 lib_talib_name = 'ta_lib'  # the underlying C library's name
 
@@ -54,7 +51,18 @@ if sys.platform == "win32":
 if not platform_supported:
     raise NotImplementedError(sys.platform)
 
-include_dirs.insert(0, numpy.get_include())
+try:
+    import numpy
+    has_numpy = True
+    include_dirs.insert(0, numpy.get_include())
+except ImportError:
+    has_numpy = False
+
+try:
+    from Cython.Build import cythonize
+    has_cython = True
+except ImportError:
+    has_cython = False
 
 for lib_talib_dir in lib_talib_dirs:
     try:
