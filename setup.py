@@ -91,7 +91,7 @@ setup(
     version = '0.4.10',
     packages = ['talib'],
 
-    install_requires=['numpy>=1.11.1', 'Cython>=0.24.1'],
+    install_requires=['numpy>=1.11.1', 'Cython>=0.27.1'],
 
     author = 'John Benediktsson',
     author_email = 'mrjbq7@gmail.com',
